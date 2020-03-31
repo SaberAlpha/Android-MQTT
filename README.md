@@ -10,5 +10,5 @@ Android MQTT客户端集成
 	}
 
 	dependencies {
-	        implementation 'com.github.SaberAlpha:Android-MQTT:1.0'
+	       implementation 'com.github.SaberAlpha:Android-MQTT:1.0.1'
 	}
