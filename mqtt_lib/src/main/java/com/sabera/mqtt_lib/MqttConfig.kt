@@ -1,4 +1,4 @@
-
+package com.sabera.mqtt_lib
 
 class MqttConfig {
 
