@@ -42,7 +42,7 @@ class MqttManager {
                 mSubscribers.entries.forEach {
                     it.value.connectLost?.invoke(cause)
                 }
-                callback.connectLost?.invoke(cause)
+                callback?.connectLost?.invoke(cause)
                 MqttLoger.e("----> mqtt connect lost, cause = ${cause?.message}")
             }
 
@@ -50,7 +50,7 @@ class MqttManager {
             override fun messageArrived(topic: String, message: MqttMessage) {
                 val subscriber = mSubscribers[topic]
                 subscriber?.messageArrived?.invoke(topic, String(message.payload), message.qos)
-                callback.messageArrived?.invoke(topic, String(message.payload), message.qos)
+                callback?.messageArrived?.invoke(topic, String(message.payload), message.qos)
                 MqttLoger.e("----> mqtt message arrived, topic = $topic, message = ${String(message.payload)}")
             }
 
@@ -58,7 +58,7 @@ class MqttManager {
                 mSubscribers.entries.forEach {
                     it.value.deliveryComplete?.invoke(token.message.toString())
                 }
-                callback.deliveryComplete?.invoke(token.message.toString())
+                callback?.deliveryComplete?.invoke(token.message.toString())
                 MqttLoger.e("----> mqtt delivery complete, token = ${token.message}")
             }
         })
