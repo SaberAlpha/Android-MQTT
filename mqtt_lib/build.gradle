@@ -7,16 +7,9 @@ group='com.github.SaberAlpha'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
-
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 14
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles 'consumer-rules.pro'
     }
 
     buildTypes {
@@ -31,6 +24,9 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    // LocalBroadcastManager在最新api中已被废弃
+    api 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
 
     // MQTT
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'

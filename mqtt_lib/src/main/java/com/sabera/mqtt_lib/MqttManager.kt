@@ -32,9 +32,9 @@ class MqttManager {
         mqttClient!!.setCallback(object : MqttCallbackExtended {
             override fun connectComplete(reconnect: Boolean, serverURI: String) {
                 if (reconnect) {
-                    MqttLoger.e("----> mqtt reconnect complete, serverUrl = $serverURI")
+                    MqttLoger.e("----> MQtt reconnect complete, serverUrl = $serverURI")
                 } else {
-                    MqttLoger.e("----> mqtt connect complete, serverUrl = $serverURI")
+                    MqttLoger.e("----> MQtt connect complete, serverUrl = $serverURI")
                 }
             }
 
@@ -43,7 +43,7 @@ class MqttManager {
                     it.value.connectLost?.invoke(cause)
                 }
                 callback?.connectLost?.invoke(cause)
-                MqttLoger.e("----> mqtt connect lost, cause = ${cause?.message}")
+                MqttLoger.e("----> MQtt connect lost, cause = ${cause?.message}")
             }
 
             @Throws(Exception::class)
@@ -51,7 +51,7 @@ class MqttManager {
                 val subscriber = mSubscribers[topic]
                 subscriber?.messageArrived?.invoke(topic, String(message.payload), message.qos)
                 callback?.messageArrived?.invoke(topic, String(message.payload), message.qos)
-                MqttLoger.e("----> mqtt message arrived, topic = $topic, message = ${String(message.payload)}")
+                MqttLoger.e("----> MQtt message arrived, topic = $topic, message = ${String(message.payload)}")
             }
 
             override fun deliveryComplete(token: IMqttDeliveryToken) {
@@ -59,7 +59,7 @@ class MqttManager {
                     it.value.deliveryComplete?.invoke(token.message.toString())
                 }
                 callback?.deliveryComplete?.invoke(token.message.toString())
-                MqttLoger.e("----> mqtt delivery complete, token = ${token.message}")
+                MqttLoger.e("----> MQtt delivery complete, token = ${token.message}")
             }
         })
     }
@@ -74,9 +74,9 @@ class MqttManager {
             mqttClient?.disconnect()
             mqttClient?.unregisterResources()
             clear()
-            MqttLoger.e("----> mqtt close success.")
+            MqttLoger.e("----> MQtt close success.")
         } catch (e: Exception) {
-            MqttLoger.e("----> mqtt close failed.")
+            MqttLoger.e("----> MQtt close failed.")
             e.printStackTrace()
         }
     }
@@ -88,7 +88,7 @@ class MqttManager {
      */
     fun connect(subscriber: (MqttSubscriber.() -> Unit)? = null) {
         if (mqttClient == null) {
-            MqttLoger.e("----> mqtt connect failed, please init mqtt first.")
+            MqttLoger.e("----> MQtt connect failed, please init MQtt first.")
             return
         }
         val callback = MqttSubscriber()
@@ -100,7 +100,7 @@ class MqttManager {
                     mSubscribers.entries.forEach {
                         it.value.connectSuccess?.invoke()
                     }
-                    MqttLoger.e("----> mqtt connect success.")
+                    MqttLoger.e("----> MQtt connect success.")
                     val disconnectedBufferOptions = DisconnectedBufferOptions()
                     disconnectedBufferOptions.isBufferEnabled = true
                     disconnectedBufferOptions.bufferSize = 100
@@ -114,7 +114,7 @@ class MqttManager {
                     mSubscribers.entries.forEach {
                         it.value.connectFailed?.invoke(exception)
                     }
-                    MqttLoger.e("----> mqtt connect failed, exception = ${exception?.message}")
+                    MqttLoger.e("----> MQtt connect failed, exception = ${exception?.message}")
                 }
             })
         } catch (ex: MqttException) {
@@ -127,7 +127,7 @@ class MqttManager {
      */
     fun subscribe(topic: String, subscriber: (MqttSubscriber.() -> Unit)? = null) {
         if (mqttClient == null) {
-            MqttLoger.e("----> mqtt subscribe failed, please init mqtt first.")
+            MqttLoger.e("----> MQtt subscribe failed, please init MQtt first.")
             return
         }
         if (isConnected()) {
@@ -153,12 +153,12 @@ class MqttManager {
             mqttClient?.subscribe(topic, 0, null, object : IMqttActionListener {
                 override fun onSuccess(asyncActionToken: IMqttToken) {
                     callback.subscriberSuccess?.invoke()
-                    MqttLoger.e("----> mqtt subscribe success, topic = $topic")
+                    MqttLoger.e("----> MQtt subscribe success, topic = $topic")
                 }
 
                 override fun onFailure(asyncActionToken: IMqttToken, exception: Throwable?) {
                     callback.subscriberFailed?.invoke(exception)
-                    MqttLoger.e("----> mqtt subscribe failed, exception = ${exception?.message}")
+                    MqttLoger.e("----> MQtt subscribe failed, exception = ${exception?.message}")
                 }
             })
         } catch (ex: MqttException) {
@@ -173,11 +173,11 @@ class MqttManager {
         mSubscribers.remove(topic)
         mqttClient?.unsubscribe(topic, null, object : IMqttActionListener {
             override fun onSuccess(asyncActionToken: IMqttToken) {
-                MqttLoger.e("----> mqtt unsubscribe success, topic = $topic")
+                MqttLoger.e("----> MQtt unsubscribe success, topic = $topic")
             }
 
             override fun onFailure(asyncActionToken: IMqttToken, exception: Throwable?) {
-                MqttLoger.e("----> mqtt unsubscribe failed, exception = ${exception?.message}")
+                MqttLoger.e("----> MQtt unsubscribe failed, exception = ${exception?.message}")
             }
         })
     }
@@ -188,7 +188,7 @@ class MqttManager {
      */
     fun publishMessage(topic: String, content: String) {
         if (mqttClient == null) {
-            MqttLoger.e("----> mqtt publish message failed, please init mqtt first.")
+            MqttLoger.e("----> MQtt publish message failed, please init mqtt first.")
             return
         }
         if (isConnected()) {
